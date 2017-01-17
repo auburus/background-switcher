@@ -1,9 +1,14 @@
 import requests
 import sys
+import os
 from bs4 import BeautifulSoup
 
 def get_pic_link():
-    r = requests.get('http://fuckinghomepage.com/')
+    r = requests.get('http://fuckinghomepage.com')
+
+    if r.status_code != 200:
+        sys.stderr.write('Unable to access fuckinghomepage\n')
+        sys.exit(1)
 
     soup = BeautifulSoup(r.text, "html.parser")
     items = soup.select(".PostBody > p")
@@ -23,6 +28,10 @@ def get_pic_link():
 '''
 def tumblr_redirect(link):
     r = requests.get(link)
+    if r.status_code != 200:
+        sys.stderr.write('Unable to bypass tumblr redirect\n')
+        sys.exit(1)
+
     soup = BeautifulSoup(r.text, "html.parser")
 
     return soup.title.string
@@ -33,10 +42,13 @@ def __main__():
 
     r = requests.get(pic_link, stream=True)
     if r.status_code != 200:
+        sys.stderr.write('Unable to get image\n')
         sys.exit(1)
 
     with open('./image', 'wb') as f:
         for chunk in r.iter_content(chunk_size=128):
             f.write(chunk)
+    
+    os.system('xfdesktop --reload')
 
 __main__()
