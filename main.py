@@ -1,6 +1,7 @@
 import requests
 import sys
 import os
+import os.path
 from bs4 import BeautifulSoup
 
 def get_pic_link():
@@ -45,7 +46,8 @@ def __main__():
         sys.stderr.write('Unable to get image\n')
         sys.exit(1)
 
-    with open('./image', 'wb') as f:
+    directory = os.path.dirname(os.path.realpath(__file__))
+    with open(directory + '/image', 'wb') as f:
         for chunk in r.iter_content(chunk_size=128):
             f.write(chunk)
     
