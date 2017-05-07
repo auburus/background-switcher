@@ -37,11 +37,25 @@ def tumblr_redirect(link):
 
     return soup.title.string
 
+def extract_img_link(link):
+    ''' Handle special cases in some websites, or return
+        the link hoping that is an image otherwise'''
+
+    if "flickr" in link:
+        r = requests.get(link)
+        soup = BeautifulSoup(r.text, "html.parser")
+        img = soup.select("#allsizes-photo > img")
+
+        return img[0]['src']
+    
+    return link
+
 def __main__():
     link = get_pic_link()
-    pic_link = tumblr_redirect(link)
+    original_link = tumblr_redirect(link)
+    img_src = extract_img_link(original_link)
 
-    r = requests.get(pic_link, stream=True)
+    r = requests.get(img_src, stream=True)
     if r.status_code != 200:
         sys.stderr.write('Unable to get image\n')
         sys.exit(1)
