@@ -47,6 +47,9 @@ def extract_img_link(link):
         img = soup.select("#allsizes-photo > img")
 
         return img[0]['src']
+
+    if 'i.reddituploads.com' in link:
+        return link.replace(';', '')
     
     return link
 
