@@ -41,7 +41,7 @@ def extract_img_link(link):
     ''' Handle special cases in some websites, or return
         the link hoping that is an image otherwise'''
 
-    if "flickr" in link:
+    if "www.flickr.com" in link:
         r = requests.get(link)
         soup = BeautifulSoup(r.text, "html.parser")
         img = soup.select("#allsizes-photo > img")
