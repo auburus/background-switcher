@@ -4,6 +4,7 @@ import os
 import os.path
 from bs4 import BeautifulSoup
 from urllib import parse
+from PIL import Image
 
 def get_pic_link():
     r = requests.get('http://fuckinghomepage.com')
@@ -67,10 +68,23 @@ def __main__():
         sys.exit(1)
 
     directory = os.path.dirname(os.path.realpath(__file__))
-    with open(directory + '/image', 'wb') as f:
+    download = directory + '/.image'
+    with open(download, 'wb') as f:
         for chunk in r.iter_content(chunk_size=128):
             f.write(chunk)
     
+    # Check if it's a valid image, and replace the original one
+    # if that's the case
+    try:
+        Image.open(download)
+    except IOError:
+        sys.stderr.write('Invalid image format\n')
+        os.remove(download)
+        sys.exit(1)
+
+    os.rename(download, directory + '/image')
+
+    # Finally, reload the desktop
     os.system('xfdesktop --reload')
 
 __main__()
