@@ -3,6 +3,7 @@ import sys
 import os
 import os.path
 from bs4 import BeautifulSoup
+from urllib import parse
 
 def get_pic_link():
     r = requests.get('http://fuckinghomepage.com')
@@ -28,19 +29,21 @@ def get_pic_link():
 ''' Do tumblr js redirection
 '''
 def tumblr_redirect(link):
-    r = requests.get(link)
-    if r.status_code != 200:
-        sys.stderr.write('Unable to bypass tumblr redirect\n')
-        sys.exit(1)
+    if "t.umblr.com/redirect" in link:
+        o = parse.urlparse(link)
+        q = parse.parse_qs(o.query)
+        return q['z'][0]
 
-    soup = BeautifulSoup(r.text, "html.parser")
-
-    return soup.title.string
+    return link
 
 def extract_img_link(link):
     ''' Handle special cases in some websites, or return
         the link hoping that is an image otherwise'''
 
+    return link
+
+    # I leave those here, because it was some special case somewhere,
+    # and this might come handy in the future
     if "www.flickr.com" in link:
         r = requests.get(link)
         soup = BeautifulSoup(r.text, "html.parser")
