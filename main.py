@@ -7,10 +7,13 @@ from urllib import parse
 from PIL import Image
 
 def get_pic_link():
+    """Navigate to fuckinghomepage.com and retrieve the picture link
+    """
+
     r = requests.get('http://fuckinghomepage.com')
 
     if r.status_code != 200:
-        sys.stderr.write('Unable to access fuckinghomepage\n')
+        sys.stderr.write('Unable to access the website\n')
         sys.exit(1)
 
     soup = BeautifulSoup(r.text, "html.parser")
@@ -25,11 +28,17 @@ def get_pic_link():
         if "PICTURE OF THE DAY" in p.text:
             isPicture = True
 
+    if not isPicture:
+        sys.stderr.write(
+                'The website doesn\'t contain the PICTURE OF THE DAY')
+        sys.exit(1)
+
     return pic
 
-''' Do tumblr js redirection
-'''
 def tumblr_redirect(link):
+    """ Do tumblr js redirection
+    """
+
     if "t.umblr.com/redirect" in link:
         o = parse.urlparse(link)
         q = parse.parse_qs(o.query)
@@ -37,30 +46,10 @@ def tumblr_redirect(link):
 
     return link
 
-def extract_img_link(link):
-    ''' Handle special cases in some websites, or return
-        the link hoping that is an image otherwise'''
-
-    return link
-
-    # I leave those here, because it was some special case somewhere,
-    # and this might come handy in the future
-    if "www.flickr.com" in link:
-        r = requests.get(link)
-        soup = BeautifulSoup(r.text, "html.parser")
-        img = soup.select("#allsizes-photo > img")
-
-        return img[0]['src']
-
-    if 'i.reddituploads.com' in link:
-        return link.replace(';', '')
-    
-    return link
 
 def __main__():
     link = get_pic_link()
-    original_link = tumblr_redirect(link)
-    img_src = extract_img_link(original_link)
+    img_src = tumblr_redirect(link)
 
     r = requests.get(img_src, stream=True)
     if r.status_code != 200:
