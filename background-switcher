@@ -1,4 +1,21 @@
 #!/bin/bash
-source $(dirname $0)/venv/bin/activate
-python $(dirname $0)/main.py
-deactivate
+
+set -euxo pipefail
+IFS=$'\n'
+
+curdir=$(realpath "$(dirname "$0")")
+url="$(
+  curl --fail https://old.reddit.com/r/EarthPorn/best.json\?limit=1 \
+    -H 'Accept: application/json' |
+    jq --exit-status --raw-output '.data.children[0].data.url'
+)"
+
+name=$(basename "$url")
+curl --fail -o "${curdir}/images/${name}" "${url}"
+
+for property in $(xfconf-query -c xfce4-desktop -l | grep last-image); do
+  xfconf-query \
+    -c xfce4-desktop \
+    -p "${property}" \
+    -s "${curdir}/images/${name}"
+done
