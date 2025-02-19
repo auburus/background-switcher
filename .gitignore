@@ -1,7 +1,2 @@
-image
-venv
-__pycache__
-
-*.png
-*.jpg
-*.jpeg
+images/*
+!images/.gitkeep
