@@ -1,3 +1,4 @@
 [tools]
 shellcheck = "latest"
 shfmt = "latest"
+yamlfmt = "0.16.0"
