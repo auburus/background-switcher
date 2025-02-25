@@ -2,6 +2,7 @@
 match_type: doublestar
 include:
   - "**/*.{yml,yaml}"
+  - "**/.*.{yml,yaml}"
 formatter:
   type: basic
   include_document_start: true

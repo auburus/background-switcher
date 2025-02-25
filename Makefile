@@ -16,14 +16,15 @@ setenv:
 .PHONY: format
 # Format
 format:
-	shfmt -w background-switcher
-	shfmt -w scripts/*
+	shfmt -w background-switcher scripts/*
+	yamlfmt
 
 .PHONY: lint
 # Lint
 lint:
 	shellcheck background-switcher
 	shellcheck scripts/*
+	yamlfmt -lint
 
 .PHONY: run
 # Run the program
