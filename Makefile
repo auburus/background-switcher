@@ -22,8 +22,7 @@ format:
 .PHONY: lint
 # Lint
 lint:
-	shellcheck background-switcher
-	shellcheck scripts/*
+	shellcheck background-switcher scripts/*
 	yamlfmt -lint
 
 .PHONY: run

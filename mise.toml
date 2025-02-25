@@ -1,4 +1,4 @@
 [tools]
-shellcheck = "latest"
-shfmt = "latest"
+shellcheck = "0.10.0"
+shfmt = "3.10.0"
 yamlfmt = "0.16.0"
