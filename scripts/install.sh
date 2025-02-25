@@ -7,8 +7,7 @@ executable_path=$(dirname "$curdir")/background-switcher
 
 cat >~/.config/autostart/background-switcher.desktop <<EOF
 [Desktop Entry]
-Hidden=false
-TryExec=$executable_path
+Name=Background switcher
 Exec=$executable_path
 EOF
 
