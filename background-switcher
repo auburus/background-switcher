@@ -3,6 +3,8 @@
 set -euxo pipefail
 IFS=$'\n'
 
+sleep 6
+
 curdir=$(realpath "$(dirname "$0")")
 
 token=$(curl --fail -X POST \
