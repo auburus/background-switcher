@@ -4,14 +4,29 @@ set -euxo pipefail
 IFS=$'\n'
 
 curdir=$(realpath "$(dirname "$0")")
-url="$(
-  curl --fail https://old.reddit.com/r/EarthPorn/best.json\?limit=1 \
-    -H 'Accept: application/json' |
-    jq --exit-status --raw-output '.data.children[0].data.url'
-)"
+
+token=$(curl --fail -X POST \
+  -d "grant_type=password&username=$REDDIT_USERNAME&password=$REDDIT_PASSWORD" \
+  --user "$REDDIT_APP_ID:$REDDIT_APP_SECRET" \
+  -H "User-Agent: linux:personal-script:v0.0.1 (by /u/$REDDIT_USERNAME)" \
+  https://www.reddit.com/api/v1/access_token)
+
+access_token=$(echo "$token" | jq -r '.access_token')
+
+response=$(curl --fail \
+  -H "Authorization: bearer $access_token" \
+  -H "User-Agent: linux:personal-script:v0.0.1 (by /u/$REDDIT_USERNAME)" \
+  -H 'Accept: application/json' \
+  https://oauth.reddit.com/r/EarthPorn/hot?limit=1)
+
+url=$(echo "$response" | jq --exit-status --raw-output '.data.children[0].data.url')
 
 name=$(basename "$url")
-curl --fail -o "${curdir}/images/${name}" "${url}"
+curl \
+  -H "User-Agent: linux:personal-script:v0.0.1 (by /u/$REDDIT_USERNAME)" \
+  --fail \
+  -o "${curdir}/images/${name}" \
+  "${url}"
 
 for property in $(xfconf-query -c xfce4-desktop -l | grep last-image); do
   xfconf-query \
