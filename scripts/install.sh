@@ -3,12 +3,12 @@
 set -euo pipefail
 
 curdir=$(realpath "$(dirname "$0")")
-executable_path=$(dirname "$curdir")/background-switcher
+rootdir=$(dirname "$curdir")
 
 cat >~/.config/autostart/background-switcher.desktop <<EOF
 [Desktop Entry]
 Name=Background switcher
-Exec=$executable_path
+Exec=/usr/bin/bash -c "source $rootdir/.env && $rootdir/background-switcher"
 EOF
 
 echo "Script installed successfully in ~/.config/autostart/background-switcher.desktop"
